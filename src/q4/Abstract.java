@@ -12,9 +12,9 @@ public abstract class Abstract {
     
     
     
-    public abstract boolean verificarEntrada(int fila, int columna, int numero);
-    public abstract boolean esValido(int fila, int columna, int numero);
-    public  abstract void NumerosIniciales(int cantidad);
+    public abstract void inicializarTablero(int pistas);
+    public abstract void vaciarCasillas(int cantidad);
+    public abstract boolean verificarEntrada(int fila, int col, int numero);
     
     
     

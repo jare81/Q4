@@ -16,13 +16,15 @@ public class Controlador extends Abstract {
     
     private JTextField[][] casillas;
     private int[][] tablero = new int[9][9];
+     private int[][] solucion = new int[9][9];
     
     public Controlador (JTextField[][] casillas){
         this.casillas=casillas;
+         generarSolucion();
     }
     
     
-     public void NumerosIniciales(int cantidad) {
+   /*  public void NumerosIniciales(int cantidad) {
         Random rand = new Random();
         int generados = 0;
 
@@ -129,13 +131,83 @@ public class Controlador extends Abstract {
         }
     }
     return true;
+    }*/
+    
+    public boolean generarSolucion() {
+        return resolverTablero(solucion, 0, 0);
     }
 
-    
-    
-    
-    
+    public boolean resolverTablero(int[][] tablero, int fila, int col) {
+        if (fila == 9) return true;
+        if (col == 9) return resolverTablero(tablero, fila + 1, 0);
+        if (tablero[fila][col] != 0) return resolverTablero(tablero, fila, col + 1);
+
+        for (int num = 1; num <= 9; num++) {
+            if (esValido(tablero, fila, col, num)) {
+                tablero[fila][col] = num;
+                if (resolverTablero(tablero, fila, col + 1)) return true;
+                tablero[fila][col] = 0;
+            }
+        }
+        return false;
+    }
+
+    public boolean esValido(int[][] tablero, int fila, int col, int num) {
+        for (int i = 0; i < 9; i++) {
+            if (tablero[fila][i] == num || tablero[i][col] == num) return false;
+        }
+        int inicioFila = (fila / 3) * 3;
+        int inicioCol = (col / 3) * 3;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (tablero[inicioFila + i][inicioCol + j] == num) return false;
+            }
+        }
+        return true;
+    }
+
+    public void inicializarTablero(int pistas) {
+        copiarSolucionACasillas();
+        vaciarCasillas(pistas);
+    }
+
+    public void copiarSolucionACasillas() {
+        for (int fila = 0; fila < 9; fila++) {
+            for (int col = 0; col < 9; col++) {
+                if (solucion[fila][col] != 0) {
+                    casillas[fila][col].setText(String.valueOf(solucion[fila][col]));
+                    casillas[fila][col].setEditable(false);
+                } else {
+                    casillas[fila][col].setText("");
+                }
+            }
+        }
+    }
+
+    public void vaciarCasillas(int cantidad) {
+        Random rand = new Random();
+        int vacias = 81 - cantidad;
+
+        while (vacias > 0) {
+            int fila = rand.nextInt(9);
+            int col = rand.nextInt(9);
+            if (!casillas[fila][col].getText().isEmpty()) {
+                casillas[fila][col].setText("");
+                casillas[fila][col].setEditable(true);
+                vacias--;
+            }
+        }
+    }
+
+    public boolean verificarEntrada(int fila, int col, int numero) {
+        return solucion[fila][col] == numero;
+    }
 }
+    
+    
+    
+    
+
 
 
 
